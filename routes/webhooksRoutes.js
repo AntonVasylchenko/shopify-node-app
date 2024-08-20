@@ -3,6 +3,6 @@ import { webhooksControlls } from "../controllers/index.js";
 
 const router = Router();
 
-router.route("/").get(webhooksControlls.getWebhooksShopify);
+router.route("/").post(webhooksControlls.getWebhooksShopify);
 
 export default router;
