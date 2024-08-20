@@ -3,6 +3,7 @@ import "dotenv/config";
 import "express-async-errors";
 import https from "https";
 import fs from "fs";
+import fetch from 'node-fetch';
 
 // Dev Library
 import morgan from "morgan";
@@ -12,11 +13,24 @@ import rateLimiter from "express-rate-limit";
 import helmet from "helmet";
 import xss from "xss-clean";
 import cors from "cors";
+// Shopify
+import { shopify, session } from "./api/shopify.js";
+// Mongo
+import { connectDB } from "./db/connect.js";
+// Middleware
+import * as indexMiddlewareJs from "./middleware/index.js";
+// Router
+import { webhooksRoutes } from "./routes/index.js";
 
-const options = {
-    key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
-    cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
-};
+const client = new shopify.clients.Graphql({ session });
+
+
+const options = process.env.TYPE_BUILD === "DEV" ?
+    {
+        key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
+        cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
+    } :
+    {};
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,12 +60,20 @@ app.use(morgan("tiny"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+
+app.use("/api/v1/webhooks", webhooksRoutes);
+
 app.get('/', (req, res) => {
-    res.status(200).json({ msg: "True" });
+    res.status(200).json({ ready: "ok" });
 });
+
+// app.use(indexMiddlewareJs.notFoundMiddleware);
+// app.use(indexMiddlewareJs.errorHandlerMiddleware);
+
 
 async function startApp() {
     try {
+        await connectDB(process.env.MONGO_URI);
         https.createServer(options, app).listen(PORT, function () {
             console.log(`Server is running on https://myapp.local:${PORT}`);
         });
