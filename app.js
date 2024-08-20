@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import "express-async-errors";
-import https from "https";
+// import https from "https";
 import fs from "fs";
 import fetch from 'node-fetch';
 
@@ -25,12 +25,12 @@ import { webhooksRoutes } from "./routes/index.js";
 const client = new shopify.clients.Graphql({ session });
 
 
-const options = process.env.TYPE_BUILD === "DEV" ?
-    {
-        key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
-        cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
-    } :
-    {};
+// const options = process.env.TYPE_BUILD === "DEV" ?
+//     {
+//         key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
+//         cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
+//     } :
+//     {};
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,15 +71,26 @@ app.get('/', (req, res) => {
 // app.use(indexMiddlewareJs.errorHandlerMiddleware);
 
 
+// async function startApp() {
+//     try {
+//         await connectDB(process.env.MONGO_URI);
+//         https.createServer(options, app).listen(PORT, function () {
+//             console.log(`Server is running on https://myapp.local:${PORT}`);
+//         });
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 async function startApp() {
     try {
-        await connectDB(process.env.MONGO_URI);
-        https.createServer(options, app).listen(PORT, function () {
-            console.log(`Server is running on https://myapp.local:${PORT}`);
-        });
+      await connectDB(process.env.MONGO_URI);
+      app.listen(PORT, function () {
+        console.log(`Server was started on ${PORT} Port`);
+      });
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}
-
+  }
+  
 startApp();
