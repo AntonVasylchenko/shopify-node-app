@@ -6,6 +6,8 @@ import customError from "../errors/index.js";
 const client = new shopify.clients.Graphql({ session });
 
 async function getWebhooksShopify(req, res) {
+    console.log("Hit");
+    
     const customerModel = {};
     const { customer, line_items: products } = req.body
     const uniqueListId = [...new Set(products.map(product => product.product_id))];

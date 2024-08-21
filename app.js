@@ -22,11 +22,6 @@ import * as indexMiddlewareJs from "./middleware/index.js";
 // Router
 import { webhooksRoutes } from "./routes/index.js";
 
-const options = {
-    key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
-    cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -70,6 +65,10 @@ async function startApp() {
     try {
         await connectDB(process.env.MONGO_URI);
         if (process.env.TYPE_BUILD === "DEV") {
+            const options = {
+                key: fs.readFileSync('/Users/macbookpro/myapp.local-key.pem'),
+                cert: fs.readFileSync('/Users/macbookpro/myapp.local.pem'),
+            }
             https.createServer(options, app).listen(PORT, function () {
                 console.log(`Server is running on https://myapp.local:${PORT}`);
             });
