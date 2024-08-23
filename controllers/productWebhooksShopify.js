@@ -41,6 +41,7 @@ async function postProductWebhooksShopify(req, res) {
     const customerList = await Promise.all(clients.map(createCustomerList));
     const product = await getInfoProduct(id);
 
+    console.log({ msg: "Product was created", customers: customerList, product: product });
     res.status(StatusCodes.OK).json({ msg: "Product was created", customers: customerList, product: product });
 
 }

@@ -72,6 +72,8 @@ async function postOrderWebhooksShopify(req, res) {
             throw new customError.BadRequestError("Customer was not created");
         }
 
+        console.log({ model: customerModel, msg: "Customer was created" });
+        
         res.status(StatusCodes.CREATED).json({ model: customerModel, msg: "Customer was created" });
     }
 }
