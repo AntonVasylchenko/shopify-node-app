@@ -3,7 +3,6 @@ import "dotenv/config";
 import "express-async-errors";
 import https from "https";
 import fs from "fs";
-import fetch from 'node-fetch';
 
 // Dev Library
 import morgan from "morgan";
@@ -13,14 +12,15 @@ import rateLimiter from "express-rate-limit";
 import helmet from "helmet";
 import xss from "xss-clean";
 import cors from "cors";
-// Shopify
-import { shopify, session } from "./api/shopify.js";
+
 // Mongo
 import { connectDB } from "./db/connect.js";
+
 // Middleware
 import * as indexMiddlewareJs from "./middleware/index.js";
+
 // Router
-import { webhooksRoutes } from "./routes/index.js";
+import { webhooksRoutesOrder,webhooksRoutesProduct } from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,7 +51,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 
-app.use("/api/v1/webhooks", webhooksRoutes);
+app.use("/api/v1/webhooks/order", webhooksRoutesOrder);
+app.use("/api/v1/webhooks/product", webhooksRoutesProduct);
 
 app.get('/', (req, res) => {
     res.status(200).json({ ready: "ok" });

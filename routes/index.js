@@ -1,1 +1,2 @@
-export { default as webhooksRoutes } from "./webhooksRoutes.js";
+export { default as webhooksRoutesOrder } from "./orderWebhooksRoutes.js";
+export { default as webhooksRoutesProduct } from "./productWebhooksRoutes.js";
