@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { shopify, session } from "../api/shopify.js";
 import { clientModel } from "../models/index.js";
-import customError from "../errors/index.js";
+import fetch from "node-fetch";
 
 const graphqlClient = new shopify.clients.Graphql({ session });
 
@@ -30,7 +30,7 @@ async function getInfoProduct(id) {
 
 }
 
-async function postProductWebhooksShopify(req, res) {
+async function postProductWebhooksShopify(req, res, next) {
     const { id, tags } = req.body;
     const tagsToSearch = tags.trim().split(',').map(tag => new RegExp(tag, 'i'));
 
@@ -42,8 +42,10 @@ async function postProductWebhooksShopify(req, res) {
     const product = await getInfoProduct(id);
 
     console.log({ msg: "Product was created", customers: customerList, product: product });
+    req.clients = { customers: customerList, product: product }
     res.status(StatusCodes.OK).json({ msg: "Product was created", customers: customerList, product: product });
 
+    next()
 }
 
 export default postProductWebhooksShopify;

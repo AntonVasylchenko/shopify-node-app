@@ -21,6 +21,7 @@ import * as indexMiddlewareJs from "./middleware/index.js";
 
 // Router
 import { webhooksRoutesOrder,webhooksRoutesProduct } from "./routes/index.js";
+import sendMail from "./controllers/senderEmail.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -52,7 +53,7 @@ app.use(express.json());
 
 
 app.use("/api/v1/webhooks/order", webhooksRoutesOrder);
-app.use("/api/v1/webhooks/product", webhooksRoutesProduct);
+app.use("/api/v1/webhooks/product", webhooksRoutesProduct, sendMail);
 
 app.get('/', (req, res) => {
     res.status(200).json({ ready: "ok" });
